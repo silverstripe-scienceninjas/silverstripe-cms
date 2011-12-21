@@ -27,6 +27,17 @@ class CMSMain extends LeftAndMain implements CurrentPageIdentifier, PermissionPr
 	
 	static $subitem_class = "Member";
 	
+	/**
+	 * This admin is the parent admin of the following admins
+	 *
+	 * @var array
+	 */
+	public static $page_submenu_items_CMSMain = array(
+		'CMSPageEditController',
+		'CMSPageSettingsController',
+		'CMSPageHistoryController',
+	);
+	
 	static $allowed_actions = array(
 		'addpage',
 		'buildbrokenlinks',
