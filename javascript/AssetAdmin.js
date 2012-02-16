@@ -60,56 +60,99 @@
 			}
 		});
 		
-		$('#Form_filter').entwine({
+		$('.cms-filter-form').entwine({
+			
+			GridField: null,
+			
 			/**
-				* Function: onsubmit
-				* 
-				* Parameters:
-				*  (Event) e
-				*/
+			 * Function onmatch
+			 *
+			 * Try to find the related gridfield by looking up the data-gridfield attribute on this
+			 * filter form
+			 */
+			onmatch: function() {
+				var gridfieldName = this.attr('data-gridfield');
+				this.setGridField($('.grid[data-name='+gridfieldName+']'));
+			},
+			
+			/**
+			 * Function: onsubmit
+			 * 
+			 * Parameters:
+			 *  (Event) e
+			 */
 			onsubmit: function(e) {
-				var button = jQuery(this).find(':submit:first');
-				button.addClass('loading');
-				
+				this.changeState(jQuery(this).find(':submit:first'));
+				return false;
+			},
+			
+			/**
+			 * Function: onreset
+			 * 
+			 * Parameters:
+			 *  (Event) e
+			 */
+			onreset: function(e) {
+				if(this.resetFilterForm()) {
+					this.changeState(jQuery(this));
+				}
+				return false;
+			},
+			
+			/**
+			 *  Function resetFilterForm
+			 *  
+			 **/
+			resetFilterForm: function() {
+				var needUpdate = false;
+				this.filterFields().each(function(idx, element) {
+					if($(element).val()) {
+						needUpdate = true; 
+						$(element).val('');
+					}
+				});
+				return needUpdate;
+			},
+			
+			/**
+			 * Function: changeState
+			 * 
+			 * Change the state of the gridfield, reloads it's and set loading classes on elements
+			 * 
+			 * Parameters:
+			 *   (Element) element - the element that will get a loading class added / removed
+			 *
+			 */
+			changeState: function(element) {
+				element.addClass('loading');
+				this.getGridField().setState('GridFieldFilter', {'Columns': this.filterValues()});
+				this.getGridField().reload(null, function(){
+					element.removeClass('loading');
+				});
+			},
+			
+			/**
+			 * Function filterFields
+			 * Get all fields that contains filter values
+			 *
+			 */
+			filterFields: function() {
+				return this.find(':input').not(".action, .hidden");
+			},
+			
+			/**
+			 * Function: filterValues
+			 * 
+			 * Returns an key-value array for the filter values set in the filter form
+			 *
+			 */
+			filterValues: function() {
 				var filterColumns = {};
-				jQuery(this).find('input[type=text]').each(function(idx,elm){
+				this.filterFields().each(function(idx,elm){
 					filterColumns[$(elm).attr('name')] = $(elm).val();
 				});
-				
-				var fileList = $('#Form_EditForm_File');
-				fileList.setState('GridFieldFilter', {'Columns':filterColumns});
-				fileList.reload(null, function(){
-					button.removeClass('loading');
-				});
-				return false;
-			}
-		});
-		
-		$('#Form_filter_action_clearfilter').entwine({
-			/**
-				* Function: onsubmit
-				* 
-				* Parameters:
-				*  (Event) e
-				*/
-			onclick: function(e) {
-				var button = jQuery(this);
-				button.addClass('loading');
-				
-				var form = jQuery(this).closest('form');
-				
-				form.find('input[type=text]').each(function(idx,elm) {
-					$(elm).val('');
-				});
-				
-				var fileList = $('#Form_EditForm_File');
-				fileList.setState('GridFieldFilter', {'Columns':[]});
-				fileList.reload(null, function(){
-					button.removeClass('loading');
-				});
-				return false;
+				return filterColumns;
 			}
 		});
 	});
-	
 }(jQuery));

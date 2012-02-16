@@ -157,13 +157,16 @@ JS
 		$fields = new FieldList();
 		$fields->push(new TextField('Title'));
 		$fields->push(new TextField('ClassName','Type'));
-		$fields->push(new TextField('LastEdited','Date'));
 		
 		$actions = new FieldList();
 		$actions->push(new FormAction('doFilter', 'Filter'));
-		$actions->push(new FormAction('clearfilter', 'Clear Filter'));
+		$actions->push(new ResetFormAction('clearfilter', 'Clear Filter'));
 		
-		return new Form($this, 'filter', $fields, $actions);
+		$form = new Form($this, 'filter', $fields, $actions);
+		$form->setAttribute('data-gridfield', 'File');
+		$form->addExtraClass('cms-filter-form');
+		return $form;
+		
 	}
 	
 	/**
@@ -174,7 +177,7 @@ JS
 	 * @throws SS_HTTPResponse_Exception 
 	 */
 	public function filter(SS_HTTPRequest $data) {
-		throw new SS_HTTPResponse_Exception('Filterpanel doesnt work without javascript enabled');
+		throw new SS_HTTPResponse_Exception('Filterpanel doesn\'t work without javascript enabled');
 	}
 
 	/**
