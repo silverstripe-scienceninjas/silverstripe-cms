@@ -21,6 +21,7 @@
 		</div>
 	</div>
 
+	$EditFormTools
 
 	<div class="cms-content-tools cms-panel west cms-panel-layout" data-expandOnClick="true" data-layout="{type: 'border'}">
 		<div class="cms-panel-content center">
@@ -41,7 +42,7 @@
 			$EditForm
 		</div>
 		<div id="cms-content-treeview">
-			<i>Not implemented yet</i>
+			$SiteTreeAsUL
 		</div>
 		<div id="cms-content-galleryview">
 			<i>Not implemented yet</i>

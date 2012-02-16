@@ -31,6 +31,7 @@ class AssetAdmin extends LeftAndMain {
 		'savefile',
 		'deleteUnusedThumbnails' => 'ADMIN',
 		'SyncForm',
+		'filter',
 	);
 	
 	/**
@@ -143,6 +144,37 @@ JS
 		} else {
 			return $this->redirect(Controller::join_links($this->Link('show'), $record->ID));
 		}
+	}
+	
+	/**
+	 * Returns a form for filtering of files and assets
+	 * @experimental 
+	 * 
+	 * @return Form 
+	 * @see AssetAdmin.js
+	 */
+	public function FilterForm() {
+		$fields = new FieldList();
+		$fields->push(new TextField('Title'));
+		$fields->push(new TextField('ClassName','Type'));
+		$fields->push(new TextField('LastEdited','Date'));
+		
+		$actions = new FieldList();
+		$actions->push(new FormAction('doFilter', 'Filter'));
+		$actions->push(new FormAction('clearfilter', 'Clear Filter'));
+		
+		return new Form($this, 'filter', $fields, $actions);
+	}
+	
+	/**
+	 * If this method get's called, it means that javascript didn't hook into to the submit on 
+	 * FilterForm and we can currently not do a Filter without javascript
+	 *
+	 * @param SS_HTTPRequest $data
+	 * @throws SS_HTTPResponse_Exception 
+	 */
+	public function filter(SS_HTTPRequest $data) {
+		throw new SS_HTTPResponse_Exception('Filterpanel doesnt work without javascript enabled');
 	}
 
 	/**

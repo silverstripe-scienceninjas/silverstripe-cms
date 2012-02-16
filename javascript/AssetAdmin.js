@@ -59,5 +59,57 @@
 				return false;
 			}
 		});
+		
+		$('#Form_filter').entwine({
+			/**
+				* Function: onsubmit
+				* 
+				* Parameters:
+				*  (Event) e
+				*/
+			onsubmit: function(e) {
+				var button = jQuery(this).find(':submit:first');
+				button.addClass('loading');
+				
+				var filterColumns = {};
+				jQuery(this).find('input[type=text]').each(function(idx,elm){
+					filterColumns[$(elm).attr('name')] = $(elm).val();
+				});
+				
+				var fileList = $('#Form_EditForm_File');
+				fileList.setState('GridFieldFilter', {'Columns':filterColumns});
+				fileList.reload(null, function(){
+					button.removeClass('loading');
+				});
+				return false;
+			}
+		});
+		
+		$('#Form_filter_action_clearfilter').entwine({
+			/**
+				* Function: onsubmit
+				* 
+				* Parameters:
+				*  (Event) e
+				*/
+			onclick: function(e) {
+				var button = jQuery(this);
+				button.addClass('loading');
+				
+				var form = jQuery(this).closest('form');
+				
+				form.find('input[type=text]').each(function(idx,elm) {
+					$(elm).val('');
+				});
+				
+				var fileList = $('#Form_EditForm_File');
+				fileList.setState('GridFieldFilter', {'Columns':[]});
+				fileList.reload(null, function(){
+					button.removeClass('loading');
+				});
+				return false;
+			}
+		});
 	});
+	
 }(jQuery));
